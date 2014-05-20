@@ -8,14 +8,14 @@
 #include <hyperion/ImageProcessor.h>
 
 // Grabber includes
-#include <grabber/V4L2Grabber.h>
+#include <grabber/AudioGrabber.h>
 
-class V4L2Wrapper : public QObject
+class AudioGrabberWrapper : public QObject
 {
 	Q_OBJECT
 
 public:
-	V4L2Wrapper(const std::string & device,
+	AudioGrabberWrapper(const std::string & device,
 			int input,
 			VideoStandard videoStandard,
 			PixelFormat pixelFormat,
@@ -28,7 +28,7 @@ public:
 			double blueSignalThreshold,
 			Hyperion * hyperion,
 			int hyperionPriority);
-	virtual ~V4L2Wrapper();
+	virtual ~AudioGrabberWrapper();
 
 public slots:
 	void start();
@@ -58,7 +58,7 @@ private:
 	const int _priority;
 
 	/// The V4L2 grabber
-	V4L2Grabber _grabber;
+	AudioGrabber _grabber;
 
 	/// The processor for transforming images to led colors
 	ImageProcessor * _processor;
