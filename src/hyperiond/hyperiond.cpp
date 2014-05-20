@@ -27,6 +27,11 @@
 #include <grabber/V4L2Wrapper.h>
 #endif
 
+#ifdef ENABLE_AUDIOGRABBER
+// audio grabber
+#include <grabber/AudioGrabberWrapper.h>
+#endif
+
 // XBMC Video checker includes
 #include <xbmcvideochecker/XBMCVideoChecker.h>
 
@@ -220,7 +225,44 @@ int main(int argc, char** argv)
 #else
 	if (config.isMember("grabber-v4l2"))
 	{
-		std::cerr << "The v4l2 grabber can not be instantiated, becuse it has been left out from the build" << std::endl;
+		std::cerr << "The v4l2 grabber can not be instantiated, because it has been left out from the build" << std::endl;
+	}
+#endif
+
+#ifdef ENABLE_AUDIOGRABBER
+	// construct and start the audio grabber if the configuration is present
+	AudioGrabberWrapper * audioGrabber = nullptr;
+	if (config.isMember("grabber-audio"))
+	{
+		const Json::Value & aGrabberConfig = config["grabber-audio"];
+		audioGrabber = new AudioGrabberWrapper(
+					aGrabberConfig.get("device", "/dev/video0").asString(),
+					aGrabberConfig.get("input", 0).asInt(),
+					parseVideoStandard(aGrabberConfig.get("standard", "no-change").asString()),
+					parsePixelFormat(aGrabberConfig.get("pixelFormat", "no-change").asString()),
+					aGrabberConfig.get("width", -1).asInt(),
+					aGrabberConfig.get("height", -1).asInt(),
+					aGrabberConfig.get("frameDecimation", 2).asInt(),
+					aGrabberConfig.get("sizeDecimation", 8).asInt(),
+					aGrabberConfig.get("redSignalThreshold", 0.0).asDouble(),
+					aGrabberConfig.get("greenSignalThreshold", 0.0).asDouble(),
+					aGrabberConfig.get("blueSignalThreshold", 0.0).asDouble(),
+					&hyperion,
+					aGrabberConfig.get("priority", 800).asInt());
+		audioGrabber->set3D(parse3DMode(aGrabberConfig.get("mode", "2D").asString()));
+		audioGrabber->setCropping(
+					aGrabberConfig.get("cropLeft", 0).asInt(),
+					aGrabberConfig.get("cropRight", 0).asInt(),
+					aGrabberConfig.get("cropTop", 0).asInt(),
+					aGrabberConfig.get("cropBottom", 0).asInt());
+
+		audioGrabber->start();
+		std::cout << "Audio grabber created and started" << std::endl;
+	}
+#else
+	if (config.isMember("grabber-audio"))
+	{
+		std::cerr << "The audio grabber can not be instantiated, because it has been left out from the build" << std::endl;
 	}
 #endif
 
@@ -261,6 +303,9 @@ int main(int argc, char** argv)
 #endif
 #ifdef ENABLE_V4L2
 	delete v4l2Grabber;
+#endif
+#ifdef ENABLE_AUDIOGRABBER
+	delete audioGrabber;
 #endif
 	delete xbmcVideoChecker;
 	delete jsonServer;

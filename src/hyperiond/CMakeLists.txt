@@ -18,3 +18,7 @@ endif (ENABLE_DISPMANX)
 if (ENABLE_V4L2)
 	target_link_libraries(hyperiond v4l2-grabber)
 endif (ENABLE_V4L2)
+
+if (ENABLE_AUDIOGRABBER)
+	target_link_libraries(hyperiond audio-grabber)
+endif (ENABLE_AUDIOGRABBER)
