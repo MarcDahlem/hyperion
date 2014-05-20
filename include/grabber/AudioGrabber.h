@@ -20,12 +20,12 @@
 /// Capture class for V4L2 devices
 ///
 /// @see http://linuxtv.org/downloads/v4l-dvb-apis/capture-example.html
-class V4L2Grabber : public QObject
+class AudioGrabber : public QObject
 {
 	Q_OBJECT
 
 public:
-	V4L2Grabber(const std::string & device,
+	AudioGrabber(const std::string & device,
 			int input,
 			VideoStandard videoStandard, PixelFormat pixelFormat,
 			int width,
@@ -33,7 +33,7 @@ public:
 			int frameDecimation,
 			int horizontalPixelDecimation,
 			int verticalPixelDecimation);
-	virtual ~V4L2Grabber();
+	virtual ~AudioGrabber();
 
 public slots:
 	void setCropping(int cropLeft,
