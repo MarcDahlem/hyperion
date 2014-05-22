@@ -2,43 +2,26 @@
 
 #include <grabber/AudioGrabberWrapper.h>
 
-#include <hyperion/ImageProcessorFactory.h>
-
-AudioGrabberWrapper::AudioGrabberWrapper(const std::string &device,
-		int input,
-		VideoStandard videoStandard,
-		PixelFormat pixelFormat,
-		int width,
-		int height,
-		int frameDecimation,
-		int pixelDecimation,
-		double redSignalThreshold,
-		double greenSignalThreshold,
-		double blueSignalThreshold,
+AudioGrabberWrapper::AudioGrabberWrapper(const std::string & device,
+				int freq,
+				double volume_gain,
+				int num_channels,
+				int num_bands,
+				int db_threshold,
 		Hyperion *hyperion,
 		int hyperionPriority) :
 	_timeout_ms(1000),
 	_priority(hyperionPriority),
 	_grabber(device,
-			input,
-			videoStandard,
-			pixelFormat,
-			width,
-			height,
-			frameDecimation,
-			pixelDecimation,
-			pixelDecimation),
-	_processor(ImageProcessorFactory::getInstance().newImageProcessor()),
+			freq,
+			volume_gain,
+			num_channels,
+			num_bands,
+			db_threshold),
 	_hyperion(hyperion),
 	_ledColors(hyperion->getLedCount(), ColorRgb{0,0,0}),
 	_timer()
 {
-	// set the signal detection threshold of the grabber
-	_grabber.setSignalThreshold(
-			redSignalThreshold,
-			greenSignalThreshold,
-			blueSignalThreshold,
-			50);
 
 	// register the image type
 	qRegisterMetaType<Image<ColorRgb>>("Image<ColorRgb>");
@@ -77,16 +60,6 @@ void AudioGrabberWrapper::start()
 void AudioGrabberWrapper::stop()
 {
 	_grabber.stop();
-}
-
-void AudioGrabberWrapper::setCropping(int cropLeft, int cropRight, int cropTop, int cropBottom)
-{
-	_grabber.setCropping(cropLeft, cropRight, cropTop, cropBottom);
-}
-
-void AudioGrabberWrapper::set3D(VideoMode mode)
-{
-	_grabber.set3D(mode);
 }
 
 void AudioGrabberWrapper::newFrame(const Image<ColorRgb> &image)

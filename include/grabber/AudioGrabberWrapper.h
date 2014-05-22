@@ -16,16 +16,12 @@ class AudioGrabberWrapper : public QObject
 
 public:
 	AudioGrabberWrapper(const std::string & device,
-			int input,
-			VideoStandard videoStandard,
-			PixelFormat pixelFormat,
-			int width,
-			int height,
-			int frameDecimation,
-			int pixelDecimation,
-			double redSignalThreshold,
-			double greenSignalThreshold,
-			double blueSignalThreshold,
+			const std::string & device,
+			int freq,
+			double volume_gain,
+			int num_channels,
+			int num_bands,
+			int db_threshold,
 			Hyperion * hyperion,
 			int hyperionPriority);
 	virtual ~AudioGrabberWrapper();
@@ -35,20 +31,12 @@ public slots:
 
 	void stop();
 
-	void setCropping(int cropLeft,
-					 int cropRight,
-					 int cropTop,
-					 int cropBottom);
-
-	void set3D(VideoMode mode);
-
 signals:
 	void emitColors(int priority, const std::vector<ColorRgb> &ledColors, const int timeout_ms);
 
 private slots:
-	void newFrame(const Image<ColorRgb> & image);
 
-	void checkSources();
+void checkSources();
 
 private:
 	/// The timeout of the led colors [ms]
@@ -57,11 +45,8 @@ private:
 	/// The priority of the led colors
 	const int _priority;
 
-	/// The V4L2 grabber
+	/// The audio grabber
 	AudioGrabber _grabber;
-
-	/// The processor for transforming images to led colors
-	ImageProcessor * _processor;
 
 	/// The Hyperion instance
 	Hyperion * _hyperion;

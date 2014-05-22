@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 
 	// Initialising QCoreApplication
 	QCoreApplication app(argc, argv);
-	std::cout << "QCoreApplication initialised" << std::endl;
+	std::cout << "QCoreApplication initialized" << std::endl;
 
 	signal(SIGINT,  signal_handler);
 	signal(SIGTERM, signal_handler);
@@ -236,25 +236,14 @@ int main(int argc, char** argv)
 	{
 		const Json::Value & aGrabberConfig = config["grabber-audio"];
 		audioGrabber = new AudioGrabberWrapper(
-					aGrabberConfig.get("device", "/dev/video0").asString(),
-					aGrabberConfig.get("input", 0).asInt(),
-					parseVideoStandard(aGrabberConfig.get("standard", "no-change").asString()),
-					parsePixelFormat(aGrabberConfig.get("pixelFormat", "no-change").asString()),
-					aGrabberConfig.get("width", -1).asInt(),
-					aGrabberConfig.get("height", -1).asInt(),
-					aGrabberConfig.get("frameDecimation", 2).asInt(),
-					aGrabberConfig.get("sizeDecimation", 8).asInt(),
-					aGrabberConfig.get("redSignalThreshold", 0.0).asDouble(),
-					aGrabberConfig.get("greenSignalThreshold", 0.0).asDouble(),
-					aGrabberConfig.get("blueSignalThreshold", 0.0).asDouble(),
+					aGrabberConfig.get("device", "plughw:1,0").asString(),
+					aGrabberConfig.get("frequency", 8000).asInt(),
+					aGrabberConfig.get("volume-gain", 5.0).asDouble(),
+					aGrabberConfig.get("num_channels", 1).asInt(),
+					aGrabberConfig.get("num_bands", 120).asInt(),
+					aGrabberConfig.get("db_threshold", -50).asInt(),
 					&hyperion,
 					aGrabberConfig.get("priority", 800).asInt());
-		audioGrabber->set3D(parse3DMode(aGrabberConfig.get("mode", "2D").asString()));
-		audioGrabber->setCropping(
-					aGrabberConfig.get("cropLeft", 0).asInt(),
-					aGrabberConfig.get("cropRight", 0).asInt(),
-					aGrabberConfig.get("cropTop", 0).asInt(),
-					aGrabberConfig.get("cropBottom", 0).asInt());
 
 		audioGrabber->start();
 		std::cout << "Audio grabber created and started" << std::endl;
