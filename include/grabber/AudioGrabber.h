@@ -62,4 +62,5 @@ private:
 	double _volume_gain;
 	GMainLoop *loop;
 	GstElement *bin;
+	gboolean message_handler (GstBus * bus, GstMessage * message, gpointer data);
 };

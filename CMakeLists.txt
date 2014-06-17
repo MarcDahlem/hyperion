@@ -74,6 +74,7 @@ endif (ENABLE_TINKERFORGE)
 
 if (ENABLE_AUDIOGRABBER)
     include_directories("/usr/include/gstreamer-0.10/")
+    include_directories("/usr/include/glib-2.0/")
 endif (ENABLE_AUDIOGRABBER)
 
 include(${QT_USE_FILE})

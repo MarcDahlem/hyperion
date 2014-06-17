@@ -27,8 +27,8 @@
 #include "grabber/AudioGrabber.h"
 
 /* receive spectral data from element message */
-static gboolean
-message_handler (GstBus * bus, GstMessage * message, gpointer data)
+ gboolean
+AudioGrabber::message_handler (GstBus * bus, GstMessage * message, gpointer data)
 {
   if (message->type == GST_MESSAGE_ELEMENT) {
     const GstStructure *s = gst_message_get_structure (message);
