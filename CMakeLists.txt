@@ -72,6 +72,10 @@ if (ENABLE_TINKERFORGE)
 	#find_package(libtinkerforge-1.0 REQUIRED)
 endif (ENABLE_TINKERFORGE)
 
+if (ENABLE_AUDIOGRABBER)
+    include_directories("/usr/include/gstreamer-0.10/")
+endif (ENABLE_AUDIOGRABBER)
+
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 # TODO[TvdZ]: This linking directory should only be added if we are cross compiling

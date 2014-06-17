@@ -11,6 +11,27 @@ class AudioGrabber : public QObject
 {
 	Q_OBJECT
 
+	class MyQThread: public QThread
+	{
+	private:
+		GMainLoop *loop;
+
+	public:
+		MyQThread(GMainLoop *loop)
+	{
+			this->loop = loop;
+	}
+
+	protected:
+		virtual void run()
+		{
+			if(loop)
+			{
+				g_main_loop_run(loop);
+			}
+		}
+	};
+
 public:
 	AudioGrabber(const std::string & device,
 			int freq,

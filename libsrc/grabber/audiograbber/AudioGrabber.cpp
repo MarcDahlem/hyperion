@@ -26,6 +26,47 @@
 
 #include "grabber/AudioGrabber.h"
 
+/* receive spectral data from element message */
+static gboolean
+message_handler (GstBus * bus, GstMessage * message, gpointer data)
+{
+  if (message->type == GST_MESSAGE_ELEMENT) {
+    const GstStructure *s = gst_message_get_structure (message);
+    const gchar *name = gst_structure_get_name (s);
+    GstClockTime endtime;
+
+    if (strcmp (name, "spectrum") == 0) {
+      const GValue *magnitudes;
+      const GValue *phases;
+      const GValue *mag, *phase;
+      gdouble freq;
+      guint i;
+
+      if (!gst_structure_get_clock_time (s, "endtime", &endtime))
+        endtime = GST_CLOCK_TIME_NONE;
+
+   //g_print ("New spectrum message, endtime %" GST_TIME_FORMAT "\n",
+     //     GST_TIME_ARGS (endtime));
+
+      magnitudes = gst_structure_get_value (s, "magnitude");
+      phases = gst_structure_get_value (s, "phase");
+
+      for (i = 0; i < spect_bands; ++i) {
+        freq = (gdouble) ((AUDIOFREQ / 2) * i + AUDIOFREQ / 4) / spect_bands;
+        mag = gst_value_list_get_value (magnitudes, i);
+        phase = gst_value_list_get_value (phases, i);
+
+        if (mag != NULL && phase != NULL && g_value_get_float (mag) >-50 && freq>16) {
+          g_print ("band %d (freq %g): magnitude %f dB phase %f\n", i, freq,
+              g_value_get_float (mag), g_value_get_float (phase));
+          g_print ("\n");
+        }
+      }
+    }
+  }
+  return TRUE;
+}
+
 AudioGrabber::AudioGrabber(const std::string & device,
 		int freq,
 		double volume_gain,
@@ -57,6 +98,7 @@ void AudioGrabber::start()
 	/* we need to run a GLib main loop to get the messages */
 	/* since this is not returning, run it in a new thread TODO */
 	loop = g_main_loop_new (NULL, FALSE);
+
 	g_main_loop_run (loop);
 
 }
