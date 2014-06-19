@@ -16,7 +16,6 @@ class AudioGrabberWrapper : public QObject
 
 public:
 	AudioGrabberWrapper(const std::string & device,
-			const std::string & device,
 			int freq,
 			double volume_gain,
 			int num_channels,

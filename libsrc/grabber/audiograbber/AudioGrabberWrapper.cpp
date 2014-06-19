@@ -49,7 +49,7 @@ AudioGrabberWrapper::AudioGrabberWrapper(const std::string & device,
 
 AudioGrabberWrapper::~AudioGrabberWrapper()
 {
-	delete _processor;
+	//delete _processor;
 }
 
 void AudioGrabberWrapper::start()
@@ -65,7 +65,7 @@ void AudioGrabberWrapper::stop()
 void AudioGrabberWrapper::newFrame(const Image<ColorRgb> &image)
 {
 	// process the new image
-	_processor->process(image, _ledColors);
+	//_processor->process(image, _ledColors);
 
 	// send colors to Hyperion
 	emit emitColors(_priority, _ledColors, _timeout_ms);

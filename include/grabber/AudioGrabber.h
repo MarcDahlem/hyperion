@@ -6,7 +6,6 @@
 
 // Qt includes
 #include <QObject>
-#include <QSocketNotifier>
 
 /// Capture class for V4L2 devices
 ///
@@ -15,7 +14,7 @@ class AudioGrabber : public QObject
 {
 	Q_OBJECT
 
-	class MyQThread: public QThread
+	/*class MyQThread: public QThread
 	{
 	private:
 		GMainLoop *loop;
@@ -34,7 +33,7 @@ class AudioGrabber : public QObject
 				g_main_loop_run(loop);
 			}
 		}
-	};
+	};*/
 
 public:
 	AudioGrabber(const std::string & device,
@@ -66,5 +65,5 @@ private:
 	double _volume_gain;
 	GMainLoop *loop;
 	GstElement *bin;
-	gboolean message_handler (GstBus * bus, GstMessage * message, gpointer data);
+	static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer data);
 };

@@ -27,8 +27,7 @@
 #include "grabber/AudioGrabber.h"
 
 /* receive spectral data from element message */
- gboolean
-AudioGrabber::message_handler (GstBus * bus, GstMessage * message, gpointer data)
+gboolean AudioGrabber::message_handler (GstBus * bus, GstMessage * message, gpointer data)
 {
   if (message->type == GST_MESSAGE_ELEMENT) {
     const GstStructure *s = gst_message_get_structure (message);
@@ -40,7 +39,7 @@ AudioGrabber::message_handler (GstBus * bus, GstMessage * message, gpointer data
       const GValue *phases;
       const GValue *mag, *phase;
       gdouble freq;
-      guint i;
+      int i;
 
       if (!gst_structure_get_clock_time (s, "endtime", &endtime))
         endtime = GST_CLOCK_TIME_NONE;
@@ -51,8 +50,8 @@ AudioGrabber::message_handler (GstBus * bus, GstMessage * message, gpointer data
       magnitudes = gst_structure_get_value (s, "magnitude");
       phases = gst_structure_get_value (s, "phase");
 
-      for (i = 0; i < _num_bands; ++i) {
-        freq = (gdouble) ((_freq / 2) * i + _freq / 4) / _num_bands;
+      for (i = 0; i < 20; ++i) { // TODO 20 = _num_bands
+        freq = (gdouble) ((8000 / 2) * i + 8000 / 4) / 20; // TODO 8000=_freq 8000=_freq 20=_num_bands
         mag = gst_value_list_get_value (magnitudes, i);
         phase = gst_value_list_get_value (phases, i);
 
@@ -99,7 +98,7 @@ void AudioGrabber::start()
 	/* since this is not returning, run it in a new thread TODO */
 	loop = g_main_loop_new (NULL, FALSE);
 
-	g_main_loop_run (loop);
+	/*g_main_loop_run (loop);*/
 
 }
 
@@ -122,7 +121,7 @@ void AudioGrabber::init_device()
 	  bin = gst_pipeline_new ("bin");
 
 	  src = gst_element_factory_make ("alsasrc", "src");
-	  g_object_set (G_OBJECT (src), "device", _deviceName, NULL);
+	  g_object_set (G_OBJECT (src), "device", _deviceName.c_str(), NULL);
 	  audioconvert = gst_element_factory_make ("audioconvert", NULL);
 	  volume = gst_element_factory_make ("volume", "volume");
 	  g_object_set (G_OBJECT (volume), "volume", _volume_gain , NULL);
