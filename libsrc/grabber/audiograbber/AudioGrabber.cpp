@@ -51,8 +51,8 @@ AudioGrabber::message_handler (GstBus * bus, GstMessage * message, gpointer data
       magnitudes = gst_structure_get_value (s, "magnitude");
       phases = gst_structure_get_value (s, "phase");
 
-      for (i = 0; i < spect_bands; ++i) {
-        freq = (gdouble) ((AUDIOFREQ / 2) * i + AUDIOFREQ / 4) / spect_bands;
+      for (i = 0; i < _num_bands; ++i) {
+        freq = (gdouble) ((_freq / 2) * i + _freq / 4) / _num_bands;
         mag = gst_value_list_get_value (magnitudes, i);
         phase = gst_value_list_get_value (phases, i);
 
